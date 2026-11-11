@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="lt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Priedangos – rask artimiausią saugią vietą</title>
+    <meta name="description" content="Artimiausia priedanga pagal jūsų vietą, jos darbo laikas ir aiškūs patarimai, ką daryti oro pavojaus metu." />
+    <meta name="theme-color" content="#ffd400" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon-180.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+  </head>
+  <body>
+    <a class="skip" href="#find" data-t="bar.skip"></a>
+    <header class="bar">
+      <a class="brand" href="#find" aria-label="Priedangos">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="3" fill="var(--sign)"/><rect x="3" y="3" width="26" height="26" rx="1.5" fill="none" stroke="var(--sign-ink)" stroke-width="2"/><path d="M9 22V10h6.2a4 4 0 0 1 0 8H9" fill="none" stroke="var(--sign-ink)" stroke-width="3" stroke-linejoin="round"/></svg>
+      </a>
+      <div class="bar-tools">
+        <label class="lang">
+          <span class="sr" data-t="bar.language"></span>
+          <select id="lang"></select>
+        </label>
+        <button id="textsize" class="tool" type="button"><span aria-hidden="true">A<span class="plus">+</span></span><span class="sr" data-t="bar.textSize"></span></button>
+        <a class="call" href="tel:112" data-t-aria="bar.call112Label">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.6a1 1 0 0 1-.25 1z" fill="currentColor"/></svg>
+          <span data-t="bar.call112"></span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section id="find" class="app" aria-labelledby="hero-title">
+        <div class="panel" id="panel">
+          <div class="panel-hero">
+            <h1 id="hero-title" data-t="hero.title"></h1>
+            <p class="calm" data-t="hero.calm"></p>
+            <button id="locate" class="sign" type="button">
+              <span class="sign-frame">
+                <svg class="sign-icon" viewBox="0 0 64 64" aria-hidden="true">
+                  <circle cx="22" cy="12" r="5" fill="currentColor"/>
+                  <path d="M22 19l-4 13 8 6-3 14M18 32l-7 6M22 23l9 5" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M34 42h7v-7h7v-7h7v28H34z" fill="currentColor"/>
+                </svg>
+                <span class="sign-text" id="locate-text"></span>
+              </span>
+            </button>
+            <p class="locate-state" id="locate-state" role="status" aria-live="polite"></p>
+            <button id="pick" class="btn btn-quiet pick" type="button" aria-pressed="false"></button>
+            <p class="pick-hint" data-t="map.pickGesture"></p>
+            <p class="privacy" data-t="hero.privacy"></p>
+          </div>
+          <div id="selected" class="selected" aria-live="polite"></div>
+          <div id="results" class="results" aria-live="polite"></div>
+          <div class="urgent" role="note">
+            <strong data-t="hero.urgentTitle"></strong>
+            <span data-t="hero.urgent"></span>
+          </div>
+          <div class="panel-filters" id="map">
+            <h2 id="map-title" data-t="map.title"></h2>
+            <form class="filters" id="filters" role="search" onsubmit="return false">
+              <label class="search">
+                <span class="sr" data-t="map.search"></span>
+                <input id="q" type="search" autocomplete="off" enterkeyhint="search" />
+              </label>
+              <div class="toggles">
+                <label class="chip"><input type="checkbox" id="f-always" /><span data-t="map.always"></span></label>
+                <label class="chip"><input type="checkbox" id="f-accessible" /><span data-t="map.accessible"></span></label>
+                <label class="select">
+                  <span class="sr" data-t="map.kind"></span>
+                  <select id="f-kind"></select>
+                </label>
+              </div>
+            </form>
+            <p id="shown" class="shown" role="status"></p>
+            <fieldset class="legend" id="legend"></fieldset>
+          </div>
+          <footer class="panel-footer" id="footer"></footer>
+        </div>
+        <div class="map-wrap">
+          <div id="leaflet" class="leaflet-host" role="region" data-t-aria="map.title"></div>
+          <div class="map-banners" aria-live="polite">
+            <p class="map-banner is-pick" id="pick-banner" hidden></p>
+            <p class="map-banner" id="filter-banner" hidden></p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <noscript><p class="noscript">Įjunkite JavaScript. Skubi pagalba – 112. Oficiali informacija – lt72.lt.</p></noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

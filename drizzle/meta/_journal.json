@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1794400154709,
+      "tag": "0000_special_sheva_callister",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1794404021466,
+      "tag": "0001_yielding_loners",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794410426577,
+      "tag": "0002_drop_reports",
+      "breakpoints": true
+    }
+  ]
+}

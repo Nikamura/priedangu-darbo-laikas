@@ -1,0 +1,97 @@
+name: Refresh data and deploy
+
+on:
+  # PAGD republishes the register around 14:45 UTC; refresh after that, every day.
+  schedule:
+    - cron: "30 15 * * *"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # push the database to the `data` branch
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck && pnpm test
+
+      # The database keeps stable shelter ids and the change history between runs.
+      # It lives on the orphan `data` branch, one commit, replaced on every run.
+      - name: Restore database
+        run: |
+          mkdir -p data
+          if git fetch --depth=1 origin data; then
+            git show origin/data:priedangos.sqlite > data/priedangos.sqlite
+            echo "restored $(stat -c %s data/priedangos.sqlite) bytes"
+          else
+            echo "no data branch yet: starting a new database"
+          fi
+
+      # If the source is down or fails a safety check, keep the previous data and still deploy.
+      - name: Sync shelter register
+        id: sync
+        continue-on-error: true
+        run: pnpm sync
+
+      - name: Refresh OpenStreetMap institution hours
+        id: enrich
+        continue-on-error: true
+        run: pnpm enrich
+
+      - run: pnpm export
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - run: pnpm build
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Save database
+        run: |
+          tmp=$(mktemp -d)
+          cp data/priedangos.sqlite "$tmp/"
+          cd "$tmp"
+          git init -q -b data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add priedangos.sqlite
+          git commit -qm "Shelter database $(date -u +%F)"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data:data
+
+      # Deployed with the previous data; fail the run so GitHub emails about it.
+      - name: Report refresh problems
+        if: steps.sync.outcome == 'failure' || steps.enrich.outcome == 'failure'
+        run: |
+          echo "::error::sync=${{ steps.sync.outcome }} enrich=${{ steps.enrich.outcome }} — the site was deployed with the previous data"
+          exit 1

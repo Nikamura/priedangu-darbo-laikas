@@ -1,0 +1,38 @@
+{
+  "name": "priedangu-darbo-laikas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "sync": "node src/cli.ts sync",
+    "export": "node src/cli.ts export",
+    "stats": "node src/cli.ts stats",
+    "db:generate": "drizzle-kit generate",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p web",
+    "test": "node --test 'test/**/*.test.ts'",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "release": "pnpm sync && pnpm enrich && pnpm export && pnpm build",
+    "enrich": "node src/cli.ts enrich"
+  },
+  "dependencies": {
+    "@fontsource-variable/onest": "^5.3.1",
+    "@fontsource-variable/unbounded": "^5.3.0",
+    "better-sqlite3": "^13.0.3",
+    "drizzle-orm": "^0.45.4",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^26.6.6",
+    "drizzle-kit": "^0.31.11",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7"
+  },
+  "packageManager": "pnpm@12.16.1"
+}
